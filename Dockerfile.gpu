@@ -1,0 +1,18 @@
+ARG CUDA_VERSION_ARG
+FROM nvidia/cuda:$CUDA_VERSION_ARG-devel-ubuntu18.04
+
+RUN \
+    apt update && apt install -y git wget unzip bzip2 libgomp1 build-essential
+
+RUN wget -O Miniconda3.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
+    bash Miniconda3.sh -b -p /opt/python
+
+ENV PATH=/opt/python/bin:$PATH
+
+RUN \
+    conda install -c conda-forge python=3.7 numpy pytest scipy scikit-learn numba pandas matplotlib tqdm>4.25.0 pytest-cov pytest-mpl ipython
+
+RUN \
+    pip install xgboost lightgbm catboost
+
+ADD test.sh /tmp/
